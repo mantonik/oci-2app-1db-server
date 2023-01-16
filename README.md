@@ -53,7 +53,7 @@ cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
 ls -l
 
-
+ 
 
 https://github.com/mantonik/oci-2app-1db-server/archive/refs/heads/main.zip
 

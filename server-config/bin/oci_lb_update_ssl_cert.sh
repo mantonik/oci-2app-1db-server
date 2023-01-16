@@ -69,13 +69,13 @@ done
 echo ""
 echo "Update LB with latest certificate"
 oci lb listener update \
---default-backend-set-name bk-http \
+--default-backend-set-name bk_app \
 --port 443 \
 --protocol HTTP \
 --load-balancer-id ${LB_OCIID} \
---listener-name LS-https \
+--listener-name LS_443 \
 --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
---routing-policy-name RP_LS_HTTPS \
+--routing-policy-name RP_LS_443 \
 --force
 
 echo "Wait for certificate file to be active"
