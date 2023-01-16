@@ -5,6 +5,7 @@
 # 2/3/2022 createa script 
 #
 #
+echo "Delete unused SSL certificates"
 
 LB_OCIID=`cat /root/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 #Get active SSL certificate 

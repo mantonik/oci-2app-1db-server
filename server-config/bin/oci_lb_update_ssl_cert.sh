@@ -14,6 +14,7 @@
 # - fix while loop
 # - fix x variable
 # - add call to delete SSL cert script
+# 1/16/2023 update with parameters 
 #
 # To Do
 # update configuration file and add more elements in one single line 
@@ -36,6 +37,10 @@ DOMAIN=$1
 
 LB_OCIID=`cat $HOME/server-config/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 
+BACKEND=bk_app
+LISTENER=LS_443
+BKACKENDPROTOCOL=HTTP
+#ROUTINGPOLICY=RP_LS_443
 
 echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
@@ -69,13 +74,13 @@ done
 echo ""
 echo "Update LB with latest certificate"
 oci lb listener update \
---default-backend-set-name bk_app \
+--default-backend-set-name ${BACKEND} \
 --port 443 \
---protocol HTTP \
+--protocol ${BKACKENDPROTOCOL} \
 --load-balancer-id ${LB_OCIID} \
---listener-name LS_443 \
+--listener-name ${LISTENER} \
 --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
---routing-policy-name RP_LS_443 \
+#--routing-policy-name ${ROUTINGPOLICY} \
 --force
 
 echo "Wait for certificate file to be active"
