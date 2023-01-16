@@ -24,3 +24,34 @@ file format
 Future: If file doesn't exit script will ask a questions and add new entry to configuration file
 
 
+########################
+Instalation Process 
+########################
+
+
+...app1
+...app2
+##########
+Cloud Init script when setup a server 
+#!/bin/bash 
+/bin/dnf -y update
+
+##########
+app1
+##########
+#!/bin/bash
+export REPOBRANCH=dev
+export REPONAME=oci-2app-1db-server
+REPODIR=${HOME}/repository/${REPOBRANCH}
+
+cd ${HOME}
+rm -rf * 
+mkdir -p ${REPODIR}
+cd ${REPODIR}
+wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
+unzip ${REPOBRANCH}.zip
+cp -a ${REPONAME}-${REPOBRANCH}/server-config/* ${HOME}/
+cd ${HOME}
+ls -l
+#sudo ./bin/01.install-server-4app-2db.sh
+
