@@ -8,6 +8,10 @@
 #     entry start from LB_OCIID:
 #Script support single LB only
 
+#Reference 
+#https://docs.oracle.com/en-us/iaas/tools/oci-cli/2.9.1/oci_cli_docs/cmdref/lb/certificate.html
+#
+
 ##########
 ## Version 
 # 2/3/2022 - create script
@@ -48,6 +52,8 @@ LB_OCIID=`cat $HOME/server-config/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{
 BACKEND=bk_app
 LISTENER=LS_443
 BKACKENDPROTOCOL=HTTP
+HOSTNAMES=ocidemo3.ddns.net
+
 #ROUTINGPOLICY=RP_LS_443
 
 echo "Update SSL certificate in LB for domain: " ${DOMAIN}
@@ -88,8 +94,10 @@ oci lb listener update \
 --load-balancer-id ${LB_OCIID} \
 --listener-name ${LISTENER} \
 --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
-#--routing-policy-name ${ROUTINGPOLICY} \
+--hostname-names ${HOSTNAMES} \
 --force
+#--routing-policy-name ${ROUTINGPOLICY} \
+
 
 echo "Wait for certificate file to be active"
 x=0
