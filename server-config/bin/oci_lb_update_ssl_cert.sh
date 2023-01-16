@@ -19,7 +19,7 @@
 # - fix x variable
 # - add call to delete SSL cert script
 # 1/16/2023 update with parameters 
-#
+#   a. add hostname to LB configuration
 # To Do
 # update configuration file and add more elements in one single line 
 #LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
