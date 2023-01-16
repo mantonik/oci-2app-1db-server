@@ -1,5 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
+set -x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
@@ -52,7 +53,7 @@ LB_OCIID=`cat $HOME/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 BACKEND=bk_app
 LISTENER=LS_443
 BKACKENDPROTOCOL=HTTP
-HOSTNAMES=ocidemo3.ddns.net
+HOSTNAMES=["ocidemo3.ddns.net"]
 
 #ROUTINGPOLICY=RP_LS_443
 
