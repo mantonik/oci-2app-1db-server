@@ -12,6 +12,8 @@ set +x
 #Reference 
 #https://docs.oracle.com/en-us/iaas/tools/oci-cli/2.9.1/oci_cli_docs/cmdref/lb/certificate.html
 #
+# Sample of comand to generate example of the json input 
+# oci lb listener update --generate-param-json-input hostname-names
 
 ##########
 ## Version 
@@ -95,7 +97,7 @@ oci lb listener update \
 --load-balancer-id ${LB_OCIID} \
 --listener-name ${LISTENER} \
 --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
---hostname-names ${HOSTNAMES} \
+--hostname-names file://root/etc/lb_hostnames.json \
 --force
 #--routing-policy-name ${ROUTINGPOLICY} \
 
