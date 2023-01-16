@@ -23,6 +23,7 @@ set +x
 # - add call to delete SSL cert script
 # 1/16/2023 update with parameters 
 #   a. add hostname to LB configuration
+#   b. fix certificate definition
 # To Do
 # update configuration file and add more elements in one single line 
 #LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
@@ -65,9 +66,9 @@ cd /etc/letsencrypt/live/${DOMAIN}
 
 oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
 --load-balancer-id  ${LB_OCIID} \
---ca-certificate-file cert.pem  \
+--ca-certificate-file fullchain.pem \
 --private-key-file privkey.pem  \
---public-certificate-file fullchain.pem
+--public-certificate-file cert.pem
 
 #Update LB listener to use new certificate 
 #echo "Wait 120s before next step. it will take some time to add certificate to LB configuration"
@@ -121,6 +122,6 @@ done
 echo ""
 
 #Delete not used SSL certificates
-oci_lb_delete_not_used_certificates.sh
+$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
 
 exit
