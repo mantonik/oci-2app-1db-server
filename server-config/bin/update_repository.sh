@@ -10,18 +10,18 @@
 version=1.1
 
 # Delete repo folder
-#!/bin/bash
+
 export REPOBRANCH=dev
 export REPONAME=oci-2app-1db-server
-
 REPODIR=${HOME}/repository/${REPOBRANCH}
 cd ${HOME}
 rm -rf ${REPODIR}
+rm -rf ${HOME}/server-config
 mkdir -p ${REPODIR}
 cd ${REPODIR}
 wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
 unzip ${REPOBRANCH}.zip
-cp -an ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
+cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
 chmod 750 ${HOME}/server-config/bin/*.sh
 chmod 750 ${HOME}/bin/*.sh

@@ -47,7 +47,7 @@ if [ ${DOMAIN}"x" == "x" ]; then
 
 #LB_OCIID:lbocid.....:DOMAIN:ocidemo3.ddns.net:LISTENER:LS-https:BACKEND:bk-https:ROUTING-POLICY:RP_LS_HTTPS
 
-LB_OCIID=`cat $HOME/server-config/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
+LB_OCIID=`cat $HOME/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 
 BACKEND=bk_app
 LISTENER=LS_443
