@@ -4,15 +4,14 @@
 # v 1.2 delete full repository folder before uploading new files
 # v 1.3 rsync_server
 # v 1.6 add restart services
-# 1.7 - enable rsync and restart
+# 1/16/2023 script is placed in root/bin. In case of this script change this script need to be manualy updated by user 
+#
 #Script will sync from repository to local 
 version=1.1
 
 export REPOBRANCH=dev
 export REPODIR=${HOME}/repository/${REPOBRANCH}
 export REPONAME=oci-2app-1db-server
-export https_proxy=http://10.10.1.11:3128;
-export http_proxy=http://10.10.1.11:3128;
 
 # Delete repo folder
 rm -rf ${REPODIR}

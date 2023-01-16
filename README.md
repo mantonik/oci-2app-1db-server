@@ -49,8 +49,10 @@ mkdir -p ${REPODIR}
 cd ${REPODIR}
 wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
 unzip ${REPOBRANCH}.zip
-cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
+cp -an ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
+chmod 750 ${HOME}/server-config/bin/*.sh
+chmod 750 ${HOME}/bin/*.sh
 ls -l
 
  

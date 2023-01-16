@@ -26,6 +26,14 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 DOMAIN=$1
 
+if [ ${DOMAIN}"x" == "x" ]; then 
+  echo "enter as parameter domain name"
+  echo "----"
+  echo "   oci_lb_update_ssl_cert.sh example.com"
+  echo "----"  
+  exit 0
+  fi
+
 #Get LB_OCIID
 #  sed 's/^.\{4\}//g
 #
