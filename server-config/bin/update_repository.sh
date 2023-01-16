@@ -9,20 +9,22 @@
 #Script will sync from repository to local 
 version=1.1
 
+# Delete repo folder
+#!/bin/bash
 export REPOBRANCH=dev
-export REPODIR=${HOME}/repository/${REPOBRANCH}
 export REPONAME=oci-2app-1db-server
 
-# Delete repo folder
+REPODIR=${HOME}/repository/${REPOBRANCH}
+cd ${HOME}
 rm -rf ${REPODIR}
 mkdir -p ${REPODIR}
 cd ${REPODIR}
-# upload repo file
 wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
 unzip ${REPOBRANCH}.zip
-# echo copy to home
-cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
+cp -an ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
+chmod 750 ${HOME}/server-config/bin/*.sh
+chmod 750 ${HOME}/bin/*.sh
 ls -l
 
 #echo "-----------------------"
@@ -31,7 +33,7 @@ ls -l
 
 #echo "-----------------------"
 echo "Execute Restart Server"
-sudo $HOME/bin/restart_services.sh now
+sudo $HOME/server-config/bin/restart_services.sh now
 
 echo "---------------------------------------"
 echo "Version update_repository : ${version}"
