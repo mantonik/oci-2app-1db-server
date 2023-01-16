@@ -64,11 +64,17 @@ echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
 cd /etc/letsencrypt/live/${DOMAIN}
 
+#oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
+#--load-balancer-id  ${LB_OCIID} \
+#--ca-certificate-file fullchain.pem \
+#--private-key-file privkey.pem  \
+#--public-certificate-file cert.pem
+# Base on sample from Carlos Santos
 oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
 --load-balancer-id  ${LB_OCIID} \
---ca-certificate-file fullchain.pem \
 --private-key-file privkey.pem  \
---public-certificate-file cert.pem
+--public-certificate-file fullchain.pem
+
 
 #Update LB listener to use new certificate 
 #echo "Wait 120s before next step. it will take some time to add certificate to LB configuration"
