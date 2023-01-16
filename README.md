@@ -43,15 +43,17 @@ app1
 export REPOBRANCH=dev
 export REPONAME=oci-2app-1db-server
 REPODIR=${HOME}/repository/${REPOBRANCH}
-
 cd ${HOME}
-rm -rf * 
+rm -rf ${REPODIR}
 mkdir -p ${REPODIR}
 cd ${REPODIR}
 wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
 unzip ${REPOBRANCH}.zip
-cp -a ${REPONAME}-${REPOBRANCH}/server-config/* ${HOME}/
+cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
 ls -l
+
+https://github.com/mantonik/oci-2app-1db-server/archive/refs/heads/main.zip
+
 #sudo ./bin/01.install-server-4app-2db.sh
 

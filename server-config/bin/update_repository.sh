@@ -6,10 +6,11 @@
 # v 1.6 add restart services
 # 1.7 - enable rsync and restart
 #Script will sync from repository to local 
-version=1.7
+version=1.1
 
-export REPO=dev-2
-export REPODIR=${HOME}/repository/${REPO}
+export REPOBRANCH=dev
+export REPODIR=${HOME}/repository/${REPOBRANCH}
+export REPONAME=oci-2app-1db-server
 export https_proxy=http://10.10.1.11:3128;
 export http_proxy=http://10.10.1.11:3128;
 
@@ -18,21 +19,22 @@ rm -rf ${REPODIR}
 mkdir -p ${REPODIR}
 cd ${REPODIR}
 # upload repo file
-wget https://github.com/mantonik/oci-always-free-high-availability/archive/refs/heads/${REPO}.zip
-unzip ${REPO}.zip
+wget https://github.com/mantonik/${REPONAME}/archive/refs/heads/${REPOBRANCH}.zip
+unzip ${REPOBRANCH}.zip
 # echo copy to home
-cp -a oci-always-free-high-availability-${REPO}/server-config/* ${HOME}/
+cp -a ${REPONAME}-${REPOBRANCH}/server-config ${HOME}/
 cd ${HOME}
 ls -l
 
-echo "-----------------------"
-echo "Execute Rsync Server"
-sudo /home/opc/bin/rsync_server.sh
+#echo "-----------------------"
+#echo "Execute Rsync Server"
+#sudo $HOME/bin/rsync_server.sh
 
-echo "-----------------------"
+#echo "-----------------------"
 echo "Execute Restart Server"
-sudo /home/opc/bin/restart_services.sh now
+sudo $HOME/bin/restart_services.sh now
 
 echo "---------------------------------------"
 echo "Version update_repository : ${version}"
 echo "---------------------------------------"
+
