@@ -4,9 +4,6 @@
 # 1. get LB OCIID
 # 2. Create SSL certificate 
 # 3. update SSL certificate for specific listener - domain listener which have a host listener define.
-# 4. configuration of the LB is in file /root/etc/oci_network.cfg 
-#     entry start from LB_OCIID:
-#Script support single LB only
 
 ##########
 ## Version 
@@ -14,10 +11,6 @@
 # - fix while loop
 # - fix x variable
 # - add call to delete SSL cert script
-#
-# To Do
-# update configuration file and add more elements in one single line 
-#LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
 #######
 
 #export LB_OCIID="ocid1.loadbalancer.oc1.iad.aaaaaaaavl7ihlzsqcun4ojqj2nqk63siudt3c5aodazvhstb3v4cy46xtya"
@@ -27,15 +20,8 @@ DOMAIN=$1
 
 #Get LB_OCIID
 #  sed 's/^.\{4\}//g
-#
-# Parse config line and load configuration for each line in config file
-#this part make a loop, and LB calls put info functions 
-# file format 
 
-#LB_OCIID:lbocid.....:DOMAIN:ocidemo3.ddns.net:LISTENER:LS-https:BACKEND:bk-https:ROUTING-POLICY:RP_LS_HTTPS
-
-LB_OCIID=`cat $HOME/server-config/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
-
+LB_OCIID=`cat /root/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 
 echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
