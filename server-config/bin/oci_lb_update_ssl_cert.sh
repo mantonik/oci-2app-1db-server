@@ -97,7 +97,7 @@ oci lb listener update \
 --load-balancer-id ${LB_OCIID} \
 --listener-name ${LISTENER} \
 --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
---hostname-names file://root/etc/lb_hostnames.json \
+--hostname-names file:///root/etc/lb_hostnames.json \
 --force
 #--routing-policy-name ${ROUTINGPOLICY} \
 
