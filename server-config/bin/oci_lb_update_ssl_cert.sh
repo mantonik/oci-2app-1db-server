@@ -161,8 +161,7 @@ do
 done < $HOME/etc/oci_network.cfg 
 
 #Delete not used SSL certificates
-# disable for now.
-#$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
+$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
 
 # version 2/5/2023 1:24
 exit
