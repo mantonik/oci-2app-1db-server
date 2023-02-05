@@ -147,11 +147,11 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 #
 
-while IFS=: read -r CFGLINE
+while IFS=':' read -r CFGLINE
 do 
 
   echo "Line: " ${CFGLINE}
-  echo "line first element: LINE[1] " ${CFGLINE[1]}
+  echo "line first element: CFGLINE[1] " ${CFGLINE[1]}
   echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
   if [ ${CFGLINE:0:1} == "#" ]; then    
     continue
