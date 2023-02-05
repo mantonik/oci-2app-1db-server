@@ -78,9 +78,9 @@ function update_oci_lb () {
   echo ""
   echo "Update LB with latest certificate"
 
-  ROUTINGPOLICY=""
+  LBUPDATESTRING=""
   if  [ "${ROUTINGPOLICY}x"  != "x"  ]; then 
-    $ROUTINGPOLICY="--routing-policy-name  ${ROUTINGPOLICY} \\"
+    $LBUPDATESTRING="--routing-policy-name  ${ROUTINGPOLICY}"
   fi
 
   oci lb listener update \
@@ -91,8 +91,8 @@ function update_oci_lb () {
   --listener-name ${LISTENER} \
   --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
   --hostname-names file:///root/etc/${LB_HOSTNAME_JSON} \
-  $ROUTINGPOLICY
-  --force
+  $LBUPDATESTRING \
+  -- force 
   #--routing-policy-name ${ROUTINGPOLICY} \
 
  
