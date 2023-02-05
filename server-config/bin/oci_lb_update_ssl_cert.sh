@@ -144,7 +144,8 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 #BKACKENDPROTOCOL:HTTP
 #ROUTING-POLICY:
 #LB_CFG_END
-
+LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY
+ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq:ocidemo3.ddns.net:bk_app:LS_443:HTTP::
 #
 # in this IFS need to be null to make process to read a  line in the script
 while read -r CFGLINE
@@ -153,9 +154,13 @@ do
   echo "Line: " ${CFGLINE}
   IFS=':'
   IFS=', ' read -r -a LINE <<< "$CFGLINE"
-  echo "line first element: LINE[1] " ${LINE[1]}
-  echo "line first element: LINE[2] " ${LINE[2]}
-  
+  echo "LB_OCID LINE[0] " ${LINE[0]}
+  echo "DOMAIN LINE[1] " ${LINE[1]}
+  echo "BACKEND LINE[2] " ${LINE[2]}
+  echo "LISTENER LINE[3] " ${LINE[3]}
+  echo "BKACKENDPROTOCOL LINE[4] " ${LINE[4]}
+  echo "ROUTING-POLICY LINE[5] " ${LINE[5]}
+
   
   
   #echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
