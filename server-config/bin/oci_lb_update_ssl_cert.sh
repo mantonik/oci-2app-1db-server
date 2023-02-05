@@ -35,7 +35,7 @@ set -x
 #  FUNCTION
 ##########################################
 
-update_oci_lb() {
+function update_oci_lb () {
 
   echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
@@ -104,7 +104,7 @@ update_oci_lb() {
   done
   echo ""
 
-}# end update_oci_lb
+}   end update_oci_lb
 
 #########################################################
 # MAIN
