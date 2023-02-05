@@ -147,23 +147,26 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 #
 
-while read LINE
+while IFS=: read -r CFGLINE
 do 
 
-  echo "Line: " ${LINE}
-  echo "Line: {LINE:0:1} " ${LINE:0:1}
-  if [ ${LINE:0:1} == "#" ]; then    
+  echo "Line: " ${CFGLINE}
+  echo "line first element: LINE[1] " ${CFGLINE[1]}
+  echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
+  if [ ${CFGLINE:0:1} == "#" ]; then    
     continue
   fi
-  echo "LB_OCID: {LINE:0:8} " ${LINE:0:8}
+  echo "First: {LINE:0:8} " ${CFGLINE:0:8}
   if [ ${LINE:0:8} == "LB_OCID:" ]; then
     LB_OCID= ${LINE:10}
     echo "LB_OCID:"${LB_OCID}
+    continue
   fi
-  echo "DOMAIN: {LINE:0:7} "${LINE:0:7}
+  
   if [ ${LINE:0:7} == "DOMAIN:" ]; then
     DOMAIN= ${LINE:7}
     echo "DOMAIN:"${DOMAIN}
+    continue
   fi
 
 done < $HOME/etc/oci_network.cfg 
