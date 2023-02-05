@@ -138,7 +138,7 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 #ROUTINGPOLICY=RP_LS_443
 #
-cat $HOME/etc/oci_network.cfg |grep -v "#" |
+
 while read LINE
 do 
   echo "Line: " ${LINE}
@@ -147,7 +147,7 @@ do
   #  LB_OCID= ${LINE:10}
   #  echo "LB_OCID:"${LB_OCID}
   #fi
-done
+done < $HOME/etc/oci_network.cfg 
 
 #Delete not used SSL certificates
 # disable for now.
