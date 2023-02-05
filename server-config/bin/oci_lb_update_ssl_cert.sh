@@ -92,7 +92,7 @@ function update_oci_lb () {
   --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
   --hostname-names file:///root/etc/${LB_HOSTNAME_JSON} \
   $LBUPDATESTRING \
-  -- force 
+  --force 
   #--routing-policy-name ${ROUTINGPOLICY} \
 
  
