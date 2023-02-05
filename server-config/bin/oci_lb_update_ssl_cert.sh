@@ -104,7 +104,7 @@ function update_oci_lb () {
   done
   echo ""
 
-}   end update_oci_lb
+} #  end update_oci_lb
 
 #########################################################
 # MAIN
