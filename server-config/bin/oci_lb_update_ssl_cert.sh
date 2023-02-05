@@ -35,7 +35,7 @@ set -x
 #  FUNCTION
 ##########################################
 
-update_oci_lb () {
+update_oci_lb() {
 
   echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
@@ -106,8 +106,10 @@ update_oci_lb () {
 
 }# end update_oci_lb
 
+#########################################################
+# MAIN
+#########################################################
 
-#export LB_OCIID="ocid1.loadbalancer.oc1.iad.aaaaaaaavl7ihlzsqcun4ojqj2nqk63siudt3c5aodazvhstb3v4cy46xtya"
 export CERT_DT=`date +%Y%m%d_%H%M`
 
 #Get LB_OCIID
@@ -143,10 +145,10 @@ while read LINE
 do 
   echo "Line: " ${LINE}
   echo "LB_OCID: {LINE:12:5} " ${LINE:0:8}
-  #if [ ${LINE:0:9} == "LB_OCID:" ] then
-  #  LB_OCID= ${LINE:10}
-  #  echo "LB_OCID:"${LB_OCID}
-  #fi
+  if [ ${LINE:0:9} == "LB_OCID:" ] then
+    LB_OCID= ${LINE:10}
+    echo "LB_OCID:"${LB_OCID}
+  fi
 done < $HOME/etc/oci_network.cfg 
 
 #Delete not used SSL certificates
