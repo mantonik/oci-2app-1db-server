@@ -79,7 +79,7 @@ function update_oci_lb () {
   echo "Update LB with latest certificate"
 
   ROUTINGPOLICY=""
-  if  [ ${#ROUTINGPOLICY} -gt 0 ]; then 
+  if  [ "${ROUTINGPOLICY}x"  != "x"  ]; then 
     $ROUTINGPOLICY="--routing-policy-name  ${ROUTINGPOLICY} \\"
   fi
 
