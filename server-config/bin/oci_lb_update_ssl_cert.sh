@@ -143,10 +143,10 @@ while read LINE
 do 
   echo "Line: " ${LINE}
   echo "LB_OCID: {LINE:12:5} " ${LINE:0:8}
-  if [ ${LINE:0:9} == "LB_OCID:" ] then
-    LB_OCID= ${LINE:10}
-    echo "LB_OCID:"${LB_OCID}
-  fi
+  #if [ ${LINE:0:9} == "LB_OCID:" ] then
+  #  LB_OCID= ${LINE:10}
+  #  echo "LB_OCID:"${LB_OCID}
+  #fi
 done
 
 #Delete not used SSL certificates
