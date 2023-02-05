@@ -24,6 +24,8 @@ set +x
 # 1/16/2023 update with parameters 
 #   a. add hostname to LB configuration
 #   b. fix certificate definition
+#   c update create certificate
+# 2/5/2023 remove input paramaters
 # To Do
 # update configuration file and add more elements in one single line 
 #LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
@@ -31,16 +33,6 @@ set +x
 
 #export LB_OCIID="ocid1.loadbalancer.oc1.iad.aaaaaaaavl7ihlzsqcun4ojqj2nqk63siudt3c5aodazvhstb3v4cy46xtya"
 export CERT_DT=`date +%Y%m%d_%H%M`
-
-DOMAIN=$1
-
-if [ ${DOMAIN}"x" == "x" ]; then 
-  echo "enter as parameter domain name"
-  echo "----"
-  echo "   oci_lb_update_ssl_cert.sh example.com"
-  echo "----"  
-  exit 0
-  fi
 
 #Get LB_OCIID
 #  sed 's/^.\{4\}//g
@@ -56,7 +48,7 @@ LB_OCIID=`cat $HOME/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
 BACKEND=bk_app
 LISTENER=LS_443
 BKACKENDPROTOCOL=HTTP
-HOSTNAMES=["ocidemo3.ddns.net"]
+# HOSTNAMES=["ocidemo3.ddns.net"]
 
 #ROUTINGPOLICY=RP_LS_443
 
