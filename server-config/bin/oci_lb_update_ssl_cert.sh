@@ -147,28 +147,22 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 #
 # in this IFS need to be null to make process to read a  line in the script
-while IFS= read -r CFGLINE
+while read -r CFGLINE
 do 
   old_IFS=$IFS
   echo "Line: " ${CFGLINE}
-  IFS=":"
-  echo "line first element: CFGLINE[1] " ${CFGLINE[1]}
-  echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
-  if [ ${CFGLINE:0:1} == "#" ]; then    
-    continue
-  fi
-  echo "First: {LINE:0:8} " ${CFGLINE:0:8}
-  if [ ${LINE:0:8} == "LB_OCID:" ]; then
-    LB_OCID= ${LINE:10}
-    echo "LB_OCID:"${LB_OCID}
-    continue
-  fi
+  IFS=':'
+  IFS=', ' read -r -a LINE <<< "$CFGLINE"
+  echo "line first element: LINE[1] " ${LINE[1]}
+  echo "line first element: LINE[2] " ${LINE[2]}
   
-  if [ ${LINE:0:7} == "DOMAIN:" ]; then
-    DOMAIN= ${LINE:7}
-    echo "DOMAIN:"${DOMAIN}
-    continue
-  fi
+  
+  
+  #echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
+  #if [ ${CFGLINE:0:1} == "#"  ] ; then    
+  #  continue
+  #fi
+
   #set back IFS to old value
   IFS=${old_IFS}
 done < $HOME/etc/oci_network.cfg 
@@ -179,3 +173,16 @@ done < $HOME/etc/oci_network.cfg
 
 # version 2/5/2023 1:24
 exit
+
+##  echo "First: {LINE:0:8} " ${CFGLINE:0:8}
+#  if [ ${LINE:0:8} == "LB_OCID:" ]; then
+#    LB_OCID= ${LINE:10}
+#    echo "LB_OCID:"${LB_OCID}
+#    continue
+#  fi
+#  
+#  if [ ${LINE:0:7} == "DOMAIN:" ]; then
+#    DOMAIN= ${LINE:7}
+##    echo "DOMAIN:"${DOMAIN}
+#    continue
+#  fi
