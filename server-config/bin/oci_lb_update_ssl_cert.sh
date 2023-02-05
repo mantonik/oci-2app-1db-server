@@ -172,4 +172,5 @@ done < $HOME/etc/oci_network.cfg
 # disable for now.
 #$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
 
+# version 2/5/2023 1:24
 exit
