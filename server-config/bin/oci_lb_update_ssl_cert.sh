@@ -1,6 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
-set -x
+set +x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
