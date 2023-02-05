@@ -1,6 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
-set +x
+set -x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
@@ -151,7 +151,8 @@ while read LINE
 do 
 
   echo "Line: " ${LINE}
-  if [ ${LINE:0:1} == "#" ]; then
+  echo "Line: {LINE:0:1} " ${LINE:0:1}
+  if [ ${LINE:0:1} == "#" ]; then    
     continue
   fi
   echo "LB_OCID: {LINE:0:8} " ${LINE:0:8}
