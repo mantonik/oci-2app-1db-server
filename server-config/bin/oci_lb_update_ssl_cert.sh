@@ -31,6 +31,82 @@ set +x
 #LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
 #######
 
+##########################################
+#  FUNCTION
+##########################################
+
+update_oci_lb () {
+
+  echo "Update SSL certificate in LB for domain: " ${DOMAIN}
+
+  cd /etc/letsencrypt/live/${DOMAIN}
+
+  #oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
+  #--load-balancer-id  ${LB_OCIID} \
+  #--ca-certificate-file fullchain.pem \
+  #--private-key-file privkey.pem  \
+  #--public-certificate-file cert.pem
+  # Base on sample from Carlos Santos
+  oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
+  --load-balancer-id  ${LB_OCIID} \
+  --private-key-file privkey.pem  \
+  --public-certificate-file fullchain.pem
+
+
+  #Update LB listener to use new certificate 
+  #echo "Wait 120s before next step. it will take some time to add certificate to LB configuration"
+  #sleep 120 # it takes minute or two for create certificate - may need also a query to list current available certificates
+  echo "Wait for certificate file to be added"
+  x=0
+  nr=0
+  while [ ${x} -lt 100 ]
+  do
+    
+    sleep 5
+    #Check if certificate was added
+    nr=`oci lb certificate list --load-balancer-id ${LB_OCIID}|grep  certificate-name|grep ${DOMAIN}.${CERT_DT}| wc -l `
+    if [ ${nr} -gt 0 ]; then 
+      break  
+    fi
+    echo -en "."
+    x=$((x + 1))
+  done
+
+  echo ""
+  echo "Update LB with latest certificate"
+  oci lb listener update \
+  --default-backend-set-name ${BACKEND} \
+  --port 443 \
+  --protocol ${BKACKENDPROTOCOL} \
+  --load-balancer-id ${LB_OCIID} \
+  --listener-name ${LISTENER} \
+  --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
+  --hostname-names file:///root/etc/lb_hostnames.json \
+  --force
+  #--routing-policy-name ${ROUTINGPOLICY} \
+
+
+  echo "Wait for certificate file to be active"
+  x=0
+  nr=0
+  while [ ${x} -lt 100 ]
+  do
+    sleep 5
+    #Check if certificate was added
+    nr=`oci lb load-balancer get --load-balancer-id ${LB_OCIID}| jq -r '.data.listeners' |grep  certificate-name|grep ${DOMAIN}.${CERT_DT}| wc -l`
+    if [ ${nr} -gt 0 ]; then 
+      echo "Certificate update in Load Balancer"
+      break  
+    fi
+    echo -en "."
+    #x=`exp $x + 1`
+    x=$((x + 1))
+  done
+  echo ""
+
+}# end update_oci_lb
+
+
 #export LB_OCIID="ocid1.loadbalancer.oc1.iad.aaaaaaaavl7ihlzsqcun4ojqj2nqk63siudt3c5aodazvhstb3v4cy46xtya"
 export CERT_DT=`date +%Y%m%d_%H%M`
 
@@ -41,85 +117,40 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 #this part make a loop, and LB calls put info functions 
 # file format 
 
-#LB_OCIID:lbocid.....:DOMAIN:ocidemo3.ddns.net:LISTENER:LS-https:BACKEND:bk-https:ROUTING-POLICY:RP_LS_HTTPS
+
+# Requirement
+# You need to update a file in root/etc.oci_netowrk.cfg file 
+# Entry has to be in format
+
+#LB_OCIID:lbocid.....
+#DOMAIN:ocidemo3.ddns.net
+#LISTENER:LS-https
+#BACKEND:bk-https
+#ROUTING-POLICY:RP_LS_HTTPS
+
 
 LB_OCIID=`cat $HOME/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
-
 BACKEND=bk_app
 LISTENER=LS_443
 BKACKENDPROTOCOL=HTTP
+
 # HOSTNAMES=["ocidemo3.ddns.net"]
 
 #ROUTINGPOLICY=RP_LS_443
-
-echo "Update SSL certificate in LB for domain: " ${DOMAIN}
-
-cd /etc/letsencrypt/live/${DOMAIN}
-
-#oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
-#--load-balancer-id  ${LB_OCIID} \
-#--ca-certificate-file fullchain.pem \
-#--private-key-file privkey.pem  \
-#--public-certificate-file cert.pem
-# Base on sample from Carlos Santos
-oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
---load-balancer-id  ${LB_OCIID} \
---private-key-file privkey.pem  \
---public-certificate-file fullchain.pem
-
-
-#Update LB listener to use new certificate 
-#echo "Wait 120s before next step. it will take some time to add certificate to LB configuration"
-#sleep 120 # it takes minute or two for create certificate - may need also a query to list current available certificates
-echo "Wait for certificate file to be added"
-x=0
-nr=0
-while [ ${x} -lt 100 ]
-do
-  
-  sleep 5
-  #Check if certificate was added
-  nr=`oci lb certificate list --load-balancer-id ${LB_OCIID}|grep  certificate-name|grep ${DOMAIN}.${CERT_DT}| wc -l `
-  if [ ${nr} -gt 0 ]; then 
-    break  
+#
+cat $HOME/etc/oci_network.cfg |grep -v "#" |
+while read LINE
+do 
+  echo "Line: " ${LINE}
+  echo "LB_OCID: ${LINE:12:5} "${LINE:0:8}
+  if [ ${LINE:0:9} == "LB_OCID:" ]; then
+    LB_OCID= ${LINE:10}
+    echo "LB_OCID:"${LB_OCID}
   fi
-  echo -en "."
-  x=$((x + 1))
 done
-
-echo ""
-echo "Update LB with latest certificate"
-oci lb listener update \
---default-backend-set-name ${BACKEND} \
---port 443 \
---protocol ${BKACKENDPROTOCOL} \
---load-balancer-id ${LB_OCIID} \
---listener-name ${LISTENER} \
---ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
---hostname-names file:///root/etc/lb_hostnames.json \
---force
-#--routing-policy-name ${ROUTINGPOLICY} \
-
-
-echo "Wait for certificate file to be active"
-x=0
-nr=0
-while [ ${x} -lt 100 ]
-do
-  sleep 5
-  #Check if certificate was added
-  nr=`oci lb load-balancer get --load-balancer-id ${LB_OCIID}| jq -r '.data.listeners' |grep  certificate-name|grep ${DOMAIN}.${CERT_DT}| wc -l`
-  if [ ${nr} -gt 0 ]; then 
-    echo "Certificate update in Load Balancer"
-    break  
-  fi
-  echo -en "."
-  #x=`exp $x + 1`
-  x=$((x + 1))
-done
-echo ""
 
 #Delete not used SSL certificates
-$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
+# disable for now.
+#$HOME/server-config/bin/oci_lb_delete_not_used_certificates.sh
 
 exit
