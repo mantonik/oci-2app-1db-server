@@ -1,6 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
-set -x
+set +x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
@@ -136,19 +136,30 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 #LISTENER=LS_443
 #BKACKENDPROTOCOL=HTTP
 
-# HOSTNAMES=["ocidemo3.ddns.net"]
+#echo group need to end with line LB_CFG_END
+#LB_OCID:ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq
+#DOMAIN:ocidemo3.ddns.net
+#BACKEND:bk_app
+#LISTENER:LS_443
+#BKACKENDPROTOCOL:HTTP
+#ROUTING-POLICY:
+#LB_CFG_END
 
-#ROUTINGPOLICY=RP_LS_443
 #
 
 while read LINE
 do 
   echo "Line: " ${LINE}
   echo "LB_OCID: {LINE:12:5} " ${LINE:0:8}
-  if [ ${LINE:0:9} == "LB_OCID:" ]; then
+  if [ ${LINE:0:8} == "LB_OCID:" ]; then
     LB_OCID= ${LINE:10}
     echo "LB_OCID:"${LB_OCID}
   fi
+  if [ ${LINE:0:7} == "DOMAIN:" ]; then
+    DOMAIN= ${LINE:7}
+    echo "DOMAIN:"${DOMAIN}
+  fi
+
 done < $HOME/etc/oci_network.cfg 
 
 #Delete not used SSL certificates
