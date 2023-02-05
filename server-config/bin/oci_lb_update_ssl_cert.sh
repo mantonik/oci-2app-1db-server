@@ -149,12 +149,17 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 
 while read LINE
 do 
+
   echo "Line: " ${LINE}
-  echo "LB_OCID: {LINE:12:5} " ${LINE:0:8}
+  if [ ${LINE:0:1} == "#" ]; then
+    continue
+  fi
+  echo "LB_OCID: {LINE:0:8} " ${LINE:0:8}
   if [ ${LINE:0:8} == "LB_OCID:" ]; then
     LB_OCID= ${LINE:10}
     echo "LB_OCID:"${LB_OCID}
   fi
+  echo "DOMAIN: {LINE:0:7} "${LINE:0:7}
   if [ ${LINE:0:7} == "DOMAIN:" ]; then
     DOMAIN= ${LINE:7}
     echo "DOMAIN:"${DOMAIN}
