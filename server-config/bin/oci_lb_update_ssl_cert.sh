@@ -1,6 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
-set -x
+set +x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
@@ -30,6 +30,11 @@ set -x
 # update configuration file and add more elements in one single line 
 #LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
 #######
+
+#Requirement
+# update configuration file 
+# update hostname.json file 
+
 
 ##########################################
 #  FUNCTION
@@ -81,7 +86,7 @@ function update_oci_lb () {
   --load-balancer-id ${LB_OCIID} \
   --listener-name ${LISTENER} \
   --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
-  --hostname-names file:///root/etc/lb_hostnames.json \
+  --hostname-names file:///root/etc/${LB_HOSTNAME_JSON}.json \
   --force
   #--routing-policy-name ${ROUTINGPOLICY} \
 
@@ -144,8 +149,8 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 #BKACKENDPROTOCOL:HTTP
 #ROUTING-POLICY:
 #LB_CFG_END
-LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY
-ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq:ocidemo3.ddns.net:bk_app:LS_443:HTTP::
+LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY:LB_HOSTNAME_JSON
+ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq:ocidemo3.ddns.net:bk_app:LS_443:HTTP::lb_hostnames
 #
 # in this IFS need to be null to make process to read a  line in the script
 while read -r CFGLINE
@@ -159,15 +164,21 @@ do
   fi
   IFS=':' read -r -a LINE <<< "$CFGLINE"
   echo "LB_OCID LINE[0] " ${LINE[0]}
+  LB_OCIID=${LINE[0]}
   echo "DOMAIN LINE[1] " ${LINE[1]}
+  DOMAIN=${LINE[1]}
   echo "BACKEND LINE[2] " ${LINE[2]}
+  BACKEND=${LINE[2]}
   echo "LISTENER LINE[3] " ${LINE[3]}
+  LISTENER=${LINE[3]}
   echo "BKACKENDPROTOCOL LINE[4] " ${LINE[4]}
+  BKACKENDPROTOCOL=${LINE[4]}
   echo "ROUTING-POLICY LINE[5] " ${LINE[5]}
-
+  ROUTINGPOLICY=${LINE[5]}
+  echo "LB_HOSTNAME_JSON LINE[6] " ${LINE[6]}
+  LB_HOSTNAME_JSON=${LINE[6]}
   
-  
-  
+  update_oci_lb
 
   #set back IFS to old value
   IFS=${old_IFS}
