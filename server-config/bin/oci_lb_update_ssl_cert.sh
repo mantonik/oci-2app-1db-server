@@ -152,8 +152,12 @@ while read -r CFGLINE
 do 
   old_IFS=$IFS
   echo "Line: " ${CFGLINE}
-  IFS=':'
-  IFS=', ' read -r -a LINE <<< "$CFGLINE"
+
+  echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
+  if [ ${CFGLINE:0:1} == "#"  ] ; then    
+    continue
+  fi
+  IFS=':' read -r -a LINE <<< "$CFGLINE"
   echo "LB_OCID LINE[0] " ${LINE[0]}
   echo "DOMAIN LINE[1] " ${LINE[1]}
   echo "BACKEND LINE[2] " ${LINE[2]}
@@ -163,10 +167,7 @@ do
 
   
   
-  #echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
-  #if [ ${CFGLINE:0:1} == "#"  ] ; then    
-  #  continue
-  #fi
+  
 
   #set back IFS to old value
   IFS=${old_IFS}
