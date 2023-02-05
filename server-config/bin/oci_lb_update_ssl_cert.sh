@@ -1,6 +1,6 @@
 #!/bin/bash 
 #Script will update OCI LB configuration with SSL certificate 
-set +x
+set -x
 
 # 1. get LB OCIID
 # 2. Create SSL certificate 
@@ -26,9 +26,14 @@ set +x
 #   b. fix certificate definition
 #   c update create certificate
 # 2/5/2023 remove input paramaters
+# update script to handle multiple LB configuration base on the input file 
+
 # To Do
+
 # update configuration file and add more elements in one single line 
-#LB_OCIID:ocid....:DOMAIN:DOMAIN_NAME:LSTENER:LS-NAME:BACKEND:BK-NAME
+#LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY:LB_HOSTNAME_JSON
+# ROUTING-POLICY - is not used at this time 
+# LB_HOSTNAME_JSON - just base name of the file, json extension is added 
 #######
 
 #Requirement
@@ -45,18 +50,11 @@ function update_oci_lb () {
   echo "Update SSL certificate in LB for domain: " ${DOMAIN}
 
   cd /etc/letsencrypt/live/${DOMAIN}
-
-  #oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
-  #--load-balancer-id  ${LB_OCIID} \
-  #--ca-certificate-file fullchain.pem \
-  #--private-key-file privkey.pem  \
-  #--public-certificate-file cert.pem
-  # Base on sample from Carlos Santos
+  #Update the certificate
   oci lb certificate create --certificate-name  ${DOMAIN}.${CERT_DT} \
   --load-balancer-id  ${LB_OCIID} \
   --private-key-file privkey.pem  \
   --public-certificate-file fullchain.pem
-
 
   #Update LB listener to use new certificate 
   #echo "Wait 120s before next step. it will take some time to add certificate to LB configuration"
@@ -79,6 +77,12 @@ function update_oci_lb () {
 
   echo ""
   echo "Update LB with latest certificate"
+
+  ROUTINGPOLICY=""
+  if  [ ${#ROUTINGPOLICY} -gt 0 ]; then 
+    $ROUTINGPOLICY="--routing-policy-name  ${ROUTINGPOLICY} \\"
+  fi
+
   oci lb listener update \
   --default-backend-set-name ${BACKEND} \
   --port 443 \
@@ -87,10 +91,11 @@ function update_oci_lb () {
   --listener-name ${LISTENER} \
   --ssl-certificate-name  ${DOMAIN}.${CERT_DT} \
   --hostname-names file:///root/etc/${LB_HOSTNAME_JSON} \
+  $ROUTINGPOLICY
   --force
   #--routing-policy-name ${ROUTINGPOLICY} \
 
-
+ 
   echo "Wait for certificate file to be active"
   x=0
   nr=0
@@ -117,48 +122,18 @@ function update_oci_lb () {
 
 export CERT_DT=`date +%Y%m%d_%H%M`
 
-#Get LB_OCIID
-#  sed 's/^.\{4\}//g
-#
-# Parse config line and load configuration for each line in config file
-#this part make a loop, and LB calls put info functions 
-# file format 
-
-
 # Requirement
 # You need to update a file in root/etc.oci_netowrk.cfg file 
 # Entry has to be in format
 
-#LB_OCIID:lbocid.....
-#DOMAIN:ocidemo3.ddns.net
-#LISTENER:LS-https
-#BACKEND:bk-https
-#ROUTING-POLICY:RP_LS_HTTPS
-
-
-#LB_OCIID=`cat $HOME/etc/oci_network.cfg|grep LB_OCIID:|sed 's/^.\{9\}//g' `
-#BACKEND=bk_app
-#LISTENER=LS_443
-#BKACKENDPROTOCOL=HTTP
-
-#echo group need to end with line LB_CFG_END
-#LB_OCID:ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq
-#DOMAIN:ocidemo3.ddns.net
-#BACKEND:bk_app
-#LISTENER:LS_443
-#BKACKENDPROTOCOL:HTTP
-#ROUTING-POLICY:
-#LB_CFG_END
-LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY:LB_HOSTNAME_JSON
-ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq:ocidemo3.ddns.net:bk_app:LS_443:HTTP::lb_hostnames
+# 
+#LB_OCID:DOMAIN:BACKEND:LISTENER:BKACKENDPROTOCOL:ROUTING-POLICY:LB_HOSTNAME_JSON
+#ocid1.loadbalancer.oc1.iad.aaaaaaaaggx4x56erajsyc7pxjoznsykpnof32e5t7npujihmcx4dxf7qtfq:ocidemo3.ddns.net:bk_app:LS_443:HTTP::lb_hostnames
 #
 # in this IFS need to be null to make process to read a  line in the script
 while read -r CFGLINE
 do 
   old_IFS=$IFS
-  echo "Line: " ${CFGLINE}
-
-  echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
   if [ ${CFGLINE:0:1} == "#"  ] ; then    
     continue
   fi
@@ -178,6 +153,7 @@ do
   echo "LB_HOSTNAME_JSON LINE[6] " ${LINE[6]}
   LB_HOSTNAME_JSON=${LINE[6]}
   
+  #execute update of the load balancer
   update_oci_lb
 
   #set back IFS to old value
@@ -190,16 +166,3 @@ done < $HOME/etc/oci_network.cfg
 
 # version 2/5/2023 1:24
 exit
-
-##  echo "First: {LINE:0:8} " ${CFGLINE:0:8}
-#  if [ ${LINE:0:8} == "LB_OCID:" ]; then
-#    LB_OCID= ${LINE:10}
-#    echo "LB_OCID:"${LB_OCID}
-#    continue
-#  fi
-#  
-#  if [ ${LINE:0:7} == "DOMAIN:" ]; then
-#    DOMAIN= ${LINE:7}
-##    echo "DOMAIN:"${DOMAIN}
-#    continue
-#  fi
