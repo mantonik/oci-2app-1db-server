@@ -146,11 +146,12 @@ export CERT_DT=`date +%Y%m%d_%H%M`
 #LB_CFG_END
 
 #
-
-while IFS=':' read -r CFGLINE
+# in this IFS need to be null to make process to read a  line in the script
+while IFS= read -r CFGLINE
 do 
-
+  old_IFS=$IFS
   echo "Line: " ${CFGLINE}
+  IFS=":"
   echo "line first element: CFGLINE[1] " ${CFGLINE[1]}
   echo "Line: {LINE:0:1} " ${CFGLINE:0:1}
   if [ ${CFGLINE:0:1} == "#" ]; then    
@@ -168,7 +169,8 @@ do
     echo "DOMAIN:"${DOMAIN}
     continue
   fi
-
+  #set back IFS to old value
+  IFS=${old_IFS}
 done < $HOME/etc/oci_network.cfg 
 
 #Delete not used SSL certificates
