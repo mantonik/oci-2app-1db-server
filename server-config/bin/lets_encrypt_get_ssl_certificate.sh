@@ -25,7 +25,7 @@ echo "LB_OCIID:"${LB_OCIID} >> /root/etc/oci_network.cfg
 
 #Create a certificat in default domain
 #Get webroot directory for domain from nginx config file
-/usr/local/bin/certbot certonly --webroot -w /data/www/default/htdocs -d ${DOMAIN}
+/usr/local/bin/certbot certonly --webroot -w /data/www/letsencrypt/htdoc -d ${DOMAIN}
 
 #Check if certificate was created succesfully
 if [ ! -e /etc/letsencrypt/live/${DOMAIN} ]; then 

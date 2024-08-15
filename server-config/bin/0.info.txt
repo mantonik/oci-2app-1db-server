@@ -1,0 +1,18 @@
+Bin folder documentation for each script
+
+###
+# Lets encrypts 
+
+Renew certificate 
+
+
+./lets_encrypt_renew_ssl_cert.sh  - not 
+
+lets_encrypts_update_oci_lb_ssl_cert.sh ${DOMAIN} - not sure if this is wokring 
+
+# renew ssl cert with list of the domain
+
+### Good comand to review SSL certificate
+/usr/local/bin/certbot  certonly --force-renew --webroot -w /data/nginx/letsencrypt -d ocidemo3.ddns.net --deploy-hook /root/server-config/bin/oci_lb_update_ssl_cert.sh  --dry-run
+
+/usr/local/bin/certbot  certonly --force-renew --webroot -w /data/nginx/letsencrypt -d ocidemo3.ddns.net --deploy-hook /root/server-config/bin/oci_lb_update_ssl_cert.sh 

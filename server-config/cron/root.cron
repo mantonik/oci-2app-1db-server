@@ -1,0 +1,2 @@
+# set update 
+1 0 * * * /root/bin/server_yum_update.sh
